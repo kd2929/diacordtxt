@@ -42,7 +42,7 @@ bot = Client(
     api_hash=api_hash,
 )
 
-print(listen)
+print(listen.__all__)
 
 
 # ========== Converter =============#
