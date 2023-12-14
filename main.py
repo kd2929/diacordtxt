@@ -785,7 +785,7 @@ async def account_login(bot: Client, m: Message):
     for data in response2:
         subject_name = data["subject"]
         subject_id = data["_id"]
-        bb = bb + f"**{subject_name}**  :  ```{subject_id}&```\n\n"
+        bb = bb + f"**{subject_name}**  :  `{subject_id}&`\n\n"
     await m.reply_text(bb)
 
     await m.reply_text("**Now Send The Subject Id To Download**")
@@ -805,7 +805,7 @@ async def account_login(bot: Client, m: Message):
     raw_text6 = int(input6.text)
 
     editable5 = await m.reply_text(
-        "Now send the : ```videos```, ```notes``` , ```DppNotes```, ```notices```,```DppSolution```,```TestQuiz```"
+        "Now send the : `videos`, `notes` , `DppNotes`, `notices`,`DppSolution`,`TestQuiz`"
     )
     input7 = message = await bot.listen(editable.chat.id)
     raw_text7 = input7.text
