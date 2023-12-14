@@ -692,7 +692,7 @@ async def account_login(bot: Client, m: Message):
         "Host": "api.penpencil.xyz",
         "authorization": f"Bearer {raw_text1}",
         "client-id": "5eb393ee95fab7468a79d189",
-        "client-version": "12.84",
+        "client-version": "2.4.15",
         "user-agent": "Android",
         "randomid": "e4307177362e86f1",
         "client-type": "MOBILE",
