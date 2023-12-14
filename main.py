@@ -8,7 +8,7 @@ import sys
 import time
 from logging.handlers import RotatingFileHandler
 from subprocess import getstatusoutput
-
+from pyromod import listen
 import requests
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
@@ -41,7 +41,7 @@ bot = Client(
     api_hash=api_hash,
 )
 
-
+print (listen)
 # ========== Converter =============#
 @bot.on_message(filters.command(["taiyaric"]))
 async def gaiyrab(bot: Client, message: Message):
