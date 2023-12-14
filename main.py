@@ -717,9 +717,9 @@ async def account_login(bot: Client, m: Message):
         params=params,
         headers=headers,
     ).json()["data"]
-    print(response)
     aa = ""
     for data in response:
+		print(data)
         batch_name = data["name"]
         batch_id = data["_id"]
         aa = aa + f"**{batch_name}**  :  ```{batch_id}```\n\n"
