@@ -1,26 +1,26 @@
 import asyncio
+import json
 import logging
-from pyromod import listen
-import re
 import os
+import re
 import subprocess
 import sys
 import time
 from logging.handlers import RotatingFileHandler
 from subprocess import getstatusoutput
+
 import requests
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
-from pyrogram.errors import ChatAdminRequired, UserNotParticipant, ChatWriteForbidden
+from pyrogram.types import Message
+
 import online.helpers.vid as helper
+from online.Config import *
 from online.helpers.button import keyboard
 from online.helpers.sudoers import *
 from online.helpers.text import *
-from online.Config import *
-import json
 
-#==========Logging==========#
+# ==========Logging==========#
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s [%(filename)s:%(lineno)d]",
@@ -33,7 +33,7 @@ logging.basicConfig(
 logging.getLogger("pyrogram").setLevel(logging.WARNING)
 logging = logging.getLogger()
 
-#=========== Client ===========#
+# =========== Client ===========#
 bot = Client(
     "bot",
     bot_token=bot_token,
@@ -41,17 +41,21 @@ bot = Client(
     api_hash=api_hash,
 )
 
-#========== Converter =============#
+
+# ========== Converter =============#
 @bot.on_message(filters.command(["taiyaric"]))
 async def gaiyrab(bot: Client, message: Message):
-    user = message.from_user.id if message.from_user is not None else None
+    message.from_user.id if message.from_user is not None else None
     if not one(message.from_user.id):
         return await message.reply_text(
             "✨ Hello Sir,\n\nContact Me Click Below",
             reply_markup=keyboard,
         )
     else:
-        editable = await message.reply_text("This is help to convert json file to text of taiyari karlo app ", disable_web_page_preview=True)
+        editable = await message.reply_text(
+            "This is help to convert json file to text of taiyari karlo app ",
+            disable_web_page_preview=True,
+        )
     input = await bot.listen(editable.chat.id)
     x = await input.download()
     to_write = ""
@@ -59,22 +63,31 @@ async def gaiyrab(bot: Client, message: Message):
         with open(x, "r") as file:
             data = json.load(file)
             for entry in data:
-                target_change = entry[1][0].get('targetChange')
-                if target_change and target_change.get('targetChangeType') == 'ADD':
+                target_change = entry[1][0].get("targetChange")
+                if target_change and target_change.get("targetChangeType") == "ADD":
                     continue
-                document_change = entry[1][0].get('documentChange', {}).get('document', {}).get('fields', {})
+                document_change = (
+                    entry[1][0]
+                    .get("documentChange", {})
+                    .get("document", {})
+                    .get("fields", {})
+                )
                 quality = None
-                recordings = document_change.get('recordings', {}).get('arrayValue', {}).get('values', [])
+                recordings = (
+                    document_change.get("recordings", {})
+                    .get("arrayValue", {})
+                    .get("values", [])
+                )
                 for recording in recordings:
-                    recording_fields = recording.get('mapValue', {}).get('fields', {})
-                    quality = recording_fields.get('quality', {}).get('stringValue')
+                    recording_fields = recording.get("mapValue", {}).get("fields", {})
+                    quality = recording_fields.get("quality", {}).get("stringValue")
                     if quality == "480p":
-                        path = recording_fields.get('path', {}).get('stringValue')
-                        title = document_change.get('title', {}).get('stringValue')
+                        path = recording_fields.get("path", {}).get("stringValue")
+                        title = document_change.get("title", {}).get("stringValue")
                         to_write += f"{title}:{path}\n"
-                if document_change.get('type', {}).get('stringValue') == "pdf":
-                    title_pdf = document_change.get('title', {}).get('stringValue')
-                    ref_pdf = document_change.get('ref', {}).get('stringValue')
+                if document_change.get("type", {}).get("stringValue") == "pdf":
+                    title_pdf = document_change.get("title", {}).get("stringValue")
+                    ref_pdf = document_change.get("ref", {}).get("stringValue")
                     to_write += f"{title_pdf}:{ref_pdf}\n"
     except Exception as e:
         os.remove(x)
@@ -85,9 +98,12 @@ async def gaiyrab(bot: Client, message: Message):
     with open(f"new.txt", "rb") as f:
         await asyncio.sleep(5)
         doc = await message.reply_document(document=f, caption="Here is your txt file.")
-#=========== Core Commands ======#
+
+
+# =========== Core Commands ======#
 
 shell_usage = f"**USAGE:** Executes terminal commands directly via bot.\n\n<pre>/shell pip install requests</pre>"
+
 
 @bot.on_message(filters.command(["shell"]))
 async def shell(client, message: Message):
@@ -122,6 +138,7 @@ async def shell(client, message: Message):
     else:
         await message.reply_text(f"**Output:**:\n\n{result}", quote=True)
 
+
 paid_text = """
 » Hello i am online class bot which help you to **Extract** and **Download** video of Physics Wallah / Apni Kaksha / Khan Gs ..... Any Type of Online Class Which You Want.
 • **How to Access this bot**
@@ -131,17 +148,23 @@ Step 2: Go to Telegram Username
 Step 3: Send your Telegram ID From @missrose_bot
 """
 
-#============== Start Commands ==========#
+
+# ============== Start Commands ==========#
 @bot.on_message(filters.command(["start"]))
 async def account_login(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_photo(
-            photo="https://graph.org/file/f60051408d17fd505fa11.jpg", caption=paid_text, reply_markup=keyboard,
+            photo="https://graph.org/file/f60051408d17fd505fa11.jpg",
+            caption=paid_text,
+            reply_markup=keyboard,
         )
-    editable = await m.reply_text(start_text)
+    await m.reply_text(start_text)
+
 
 # ========== Global Concel Command ============
 cancel = False
+
+
 @bot.on_message(filters.command(["cancel"]))
 async def cancel(_, m):
     if not two(m.from_user.id):
@@ -157,6 +180,7 @@ async def cancel(_, m):
     await editable.edit("cancelled all")
     return
 
+
 # ============== Power Commands =================
 @bot.on_message(filters.command("restart"))
 async def restart_handler(_, m):
@@ -167,11 +191,12 @@ async def restart_handler(_, m):
     await m.reply_text("➭ 𝗕𝗼𝘁 𝗜𝘀 𝗕𝗲𝗶𝗻𝗴 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴. 𝗣𝗹𝗲𝗮𝘀𝗲 𝗞𝗲𝗲𝗽 𝗣𝗮𝘁𝗶𝗲𝗻𝗰𝗲", True)
     os.execl(sys.executable, sys.executable, *sys.argv)
 
+
 # ============ Download Commands ==============#
 @bot.on_message(filters.command(["pyro"]))
 async def download_pw(bot: Client, m: Message):
     global cancel
-    user = m.from_user.id if m.from_user is not None else None
+    m.from_user.id if m.from_user is not None else None
     if not one(m.from_user.id):
         return await m.reply_text(
             "✨ Hello Sir,\n\nContact Me Click Below",
@@ -187,7 +212,7 @@ async def download_pw(bot: Client, m: Message):
             content = f.read()
             new_content = content.split("\n")
             for i in new_content:
-                links.append(re.split(':(?=http)', i))
+                links.append(re.split(":(?=http)", i))
         os.remove(x)
     except Exception as e:
         await m.reply_text(f"**Error** : {e}")
@@ -202,7 +227,7 @@ async def download_pw(bot: Client, m: Message):
         arg = int(initial_number.text)
     except:
         arg = 0
-	    
+
     await m.reply_text(
         f"Total links: **{len(links)}**\n\nSend Me Final Number\n\nBy Default Final is {len(links)}"
     )
@@ -225,7 +250,7 @@ async def download_pw(bot: Client, m: Message):
     )
     input6 = await bot.listen(editable.chat.id)
     lol_thumb = input6.text
-	
+
     if arg == "0":
         count = 1
     else:
@@ -253,8 +278,10 @@ async def download_pw(bot: Client, m: Message):
                 if lol_thumb == "yes":
                     old_thumb = links[i][2]
                     getstatusoutput(f"wget '{old_thumb}' -O 'thumb.jpg'")
-                    thumb = "thumb.jpg"                  
-                elif lol_thumb.startswith("http://") or lol_thumb.startswith("https://"):
+                    thumb = "thumb.jpg"
+                elif lol_thumb.startswith("http://") or lol_thumb.startswith(
+                    "https://"
+                ):
                     old_thumb = lol_thumb
                     getstatusoutput(f"wget '{lol_thumb}' -O 'thumb.jpg'")
                     thumb = "thumb.jpg"
@@ -488,40 +515,43 @@ async def download_pw(bot: Client, m: Message):
     await m.reply_text("Done")
 
 
-#================ Class Plus =================#
+# ================ Class Plus =================#
 @bot.on_message(filters.command(["cp"]))
 async def info_login(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_text(
             "✨ Hello Sir,\n\nContact Me Click Below",
             reply_markup=keyboard,
-	)
+        )
     s = requests.Session()
     editable = await m.reply_text("**Send Token from ClassPlus App**")
     input1: Message = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     headers = {
-    'authority': 'api.classplusapp.com',
-    'accept': 'application/json, text/plain, */*',
-    'accept-language': 'en',
-    'api-version': '28',
-    'cache-control': 'no-cache',
-    'device-id': '516',
-    'origin': 'https://web.classplusapp.com',
-    'pragma': 'no-cache',
-    'referer': 'https://web.classplusapp.com/',
-    'region': 'IN',
-    'sec-ch-ua': '"Chromium";v="107", "Not=A?Brand";v="24"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Linux"',
-    'sec-fetch-dest': 'empty',
-    'sec-fetch-mode': 'cors',
-    'sec-fetch-site': 'same-site',
-    'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36',
-    'x-access-token':f'{raw_text0}'
+        "authority": "api.classplusapp.com",
+        "accept": "application/json, text/plain, */*",
+        "accept-language": "en",
+        "api-version": "28",
+        "cache-control": "no-cache",
+        "device-id": "516",
+        "origin": "https://web.classplusapp.com",
+        "pragma": "no-cache",
+        "referer": "https://web.classplusapp.com/",
+        "region": "IN",
+        "sec-ch-ua": '"Chromium";v="107", "Not=A?Brand";v="24"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Linux"',
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-site",
+        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+        "x-access-token": f"{raw_text0}",
     }
-    resp = s.get('https://api.classplusapp.com/v2/batches/details?limit=20&offset=0&sortBy=createdAt', headers=headers)
-    if resp.status_code==200:
+    resp = s.get(
+        "https://api.classplusapp.com/v2/batches/details?limit=20&offset=0&sortBy=createdAt",
+        headers=headers,
+    )
+    if resp.status_code == 200:
         pass
     else:
         editable = await m.reply_text("Login Failed Check Response")
@@ -529,95 +559,107 @@ async def info_login(bot: Client, m: Message):
     print(b_data)
     cool = ""
     for data in b_data:
-        t_name =data['batchName']
-        t_id =data['batchId']
+        t_name = data["batchName"]
+        t_id = data["batchId"]
         cool += f" **{t_name}** - ```{t_id}``` \n\n"
     await editable.edit(f'{"**You have these batches :-**"}\n\n{cool}')
-    editable1 = await m.reply_text("**Now send the Batch ID to Download**")
+    await m.reply_text("**Now send the Batch ID to Download**")
     input2 = message = await bot.listen(editable.chat.id)
     cr = input2.text
-    b_data = s.get(f'https://api.classplusapp.com/v2/course/content/get?courseId={cr}', headers=headers).json()['data']['courseContent']
+    b_data = s.get(
+        f"https://api.classplusapp.com/v2/course/content/get?courseId={cr}",
+        headers=headers,
+    ).json()["data"]["courseContent"]
     cool = ""
     for data in b_data:
-        id1 = data['id']
-        nam2 =  data["name"]
-        content =  data["contentType"]
+        id1 = data["id"]
+        nam2 = data["name"]
+        data["contentType"]
         cool += f" **{nam2}** - ```{id1}```\n\n"
-    await editable.edit(f'**You have these Folders :-**\n\n{cool}')
-    editable1 = await m.reply_text("**Now send the Batch ID to Download**")
+    await editable.edit(f"**You have these Folders :-**\n\n{cool}")
+    await m.reply_text("**Now send the Batch ID to Download**")
     input2 = message = await bot.listen(editable.chat.id)
     raw_text2 = input2.text
-    bdata = s.get(f'https://api.classplusapp.com/v2/course/content/get?courseId={cr}&folderId={raw_text2}', headers=headers).json()['data']['courseContent']
+    bdata = s.get(
+        f"https://api.classplusapp.com/v2/course/content/get?courseId={cr}&folderId={raw_text2}",
+        headers=headers,
+    ).json()["data"]["courseContent"]
     folder_m = ""
     for data in bdata:
-        id1 = data['id']
-        nam2 =  data["name"]
-        vid =  data["resources"]["videos"]
-        fid =  data["resources"]["files"]
-        content =  data["contentType"]
+        id1 = data["id"]
+        nam2 = data["name"]
+        vid = data["resources"]["videos"]
+        fid = data["resources"]["files"]
+        data["contentType"]
         FFF = "**FOLDER-ID -FOLDER NAME -TOTAL VIDEOS/PDFS**"
         folder_m += f" ```{id1}``` - **{nam2}  -{vid} -{fid}**\n\n"
     await editable.edit(f'{"**You have these Folders :-**"}\n\n{FFF}\n\n{folder_m}')
-    editable1 = await m.reply_text("**Now send the Folder ID to Download**")
+    await m.reply_text("**Now send the Folder ID to Download**")
     input3 = message = await bot.listen(editable.chat.id)
     raw_text3 = input3.text
-    respc = s.get(f'https://api.classplusapp.com/v2/course/content/get?courseId={cr}&folderId={raw_text3}', headers=headers).json()
-    ddata = respc['data']['courseContent'] 
-    if (respc["data"]["courseContent"][0]["contentType"]) ==1:
+    respc = s.get(
+        f"https://api.classplusapp.com/v2/course/content/get?courseId={cr}&folderId={raw_text3}",
+        headers=headers,
+    ).json()
+    ddata = respc["data"]["courseContent"]
+    if (respc["data"]["courseContent"][0]["contentType"]) == 1:
         cool = ""
         for datas in ddata:
-            id2 = datas['id']
-            nam2 =  datas["name"]
-            vid2 =  datas["resources"]["videos"]
-            fid =  datas["resources"]["files"]
-            content =  datas["contentType"]
+            id2 = datas["id"]
+            nam2 = datas["name"]
+            vid2 = datas["resources"]["videos"]
+            fid = datas["resources"]["files"]
+            datas["contentType"]
             FFF = "**FOLDER-ID -FOLDER NAME -TOTAL VIDEOS/PDFS**"
             cool += f" ```{id2}``` - **{nam2} -{vid2}**\n\n"
         await editable.edit(f'{"**You have these Folders :-**"}\n\n{FFF}\n\n{cool}')
-        editable1 = await m.reply_text("**Now send the Folder ID to Download**")
+        await m.reply_text("**Now send the Folder ID to Download**")
         input4 = message = await bot.listen(editable.chat.id)
         raw_text4 = input4.text
-        resp = s.get(f'https://api.classplusapp.com/v2/course/content/get?courseId={cr}&folderId={raw_text4}', headers=headers)
-        bdat = resp.json()['data']['courseContent']
+        resp = s.get(
+            f"https://api.classplusapp.com/v2/course/content/get?courseId={cr}&folderId={raw_text4}",
+            headers=headers,
+        )
+        bdat = resp.json()["data"]["courseContent"]
         bdat.reverse()
         to_write = ""
-        vj1 = ""
         for data in bdat:
-            id1 = data['id']
-            nam2 =  data["name"]
+            id1 = data["id"]
+            nam2 = data["name"]
             dis2 = data["description"]
             url2 = data["url"]
-            content =  data["contentType"]
+            data["contentType"]
             to_write += f" ```{id2}``` - **{nam2}  -{dis2}**\n"
             mm = "careerplus1"
-            with open(f'{mm}.txt', 'a') as f:
-                    f.write(f"{to_write}")
+            with open(f"{mm}.txt", "a") as f:
+                f.write(f"{to_write}")
         await m.reply_document(f"{mm}.txt")
     else:
         ddata.reverse()
         cool = ""
-        vj = ""        
+        vj = ""
         for data in ddata:
-            id2 = str(data['id'])
-            nam2 =  data["name"]
-            url2=  data["url"]
-            des2=  data["description"]
-            
-            #respc = s.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers=headers).json()
-            #urli = respc["url"]
+            id2 = str(data["id"])
+            nam2 = data["name"]
+            url2 = data["url"]
+            des2 = data["description"]
+
+            # respc = s.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers=headers).json()
+            # urli = respc["url"]
             FFF = "**Topic-ID -Topic NAME **"
             aa = f" ```{id2}``` - **{nam2}  -{des2}**\n\n"
-            if len(f'{vj}{aa}') > 4096:
-                #print(aa)
+            if len(f"{vj}{aa}") > 4096:
+                # print(aa)
                 cool = ""
             cool += aa
             mm = "classplus"
-            with open(f'{mm}.txt', 'a') as f:
-                    f.write(f"{nam2}-{des2}:{url2}\n")
-        await m.reply_document(f"{mm}.txt")           
+            with open(f"{mm}.txt", "a") as f:
+                f.write(f"{nam2}-{des2}:{url2}\n")
+        await m.reply_document(f"{mm}.txt")
 
 
-#================ Physics Wallah Commands ===============#
+# ================ Physics Wallah Commands ===============#
+
 
 @bot.on_message(filters.command(["infopw"]))
 async def info_login(bot: Client, m: Message):
@@ -625,7 +667,7 @@ async def info_login(bot: Client, m: Message):
         return await m.reply_text(
             "✨ Hello Sir,\n\nContact Me Click Below",
             reply_markup=keyboard,
-		)
+        )
     editable = await m.reply_text(
         "Send **Auth code** in this manner otherwise bot will not respond.\n\nSend like this:-  **AUTH CODE**"
     )
@@ -665,7 +707,7 @@ async def info_login(bot: Client, m: Message):
         for data in dict(total_info):
             all_user = total_info[data]
             new_data = data.capitalize()
-            aa += f"**{new_data}** : `{all_user}`\n" 
+            aa += f"**{new_data}** : `{all_user}`\n"
     except Exception:
         aa += f"**Name** : `{response['firstName']}`\n"
         aa += f"**Phone Number** : `{response['primaryNumber']}`"
@@ -673,7 +715,7 @@ async def info_login(bot: Client, m: Message):
     aa += f"**Class** : `{response['profileId']['class']}`\n"
     aa += f"**Father Numbers**: `{response['profileId']['parentDetails']}`"
     await m.reply_text(aa)
-	
+
 
 @bot.on_message(filters.command(["pw"]))
 async def account_login(bot: Client, m: Message):
@@ -681,13 +723,16 @@ async def account_login(bot: Client, m: Message):
         return await m.reply_text(
             "✨ Hello Sir,\n\nContact Me Click Below",
             reply_markup=keyboard,
-		)
+        )
     editable = await m.reply_text(
-        "➭ 𝗜 𝗔𝗺 𝗔𝗻 𝗣𝗪 𝗧𝘅𝗧 𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗼𝗿 𝗕𝗼𝘁. 𝗧𝗼 𝗨𝘀𝗲 𝗠𝗲 𝗦𝗲𝗻𝗱 𝗬𝗼𝘂𝗿 [𝗔𝗨𝗧𝗛 𝗖𝗢𝗗𝗘](https://youtu.be/gz4hKKNF8J4) 𝗜𝗻 𝗥𝗲𝗽𝗹𝘆 𝗧𝗼 𝗧𝗵𝗶𝘀 𝗠𝗲𝘀𝘀𝗮𝗴𝗲.\n\n➭ 𝗦𝗲𝗻𝗱 𝗔𝗨𝗧𝗛 𝗖𝗢𝗗𝗘 𝗜𝗻 𝗧𝗵𝗶𝘀 𝗠𝗮𝗻𝗻𝗲𝗿 𝗢𝘁𝗵𝗲𝗿𝘄𝗶𝘀𝗲 𝗕𝗼𝘁 𝗪𝗶𝗹𝗹 𝗡𝗼𝘁 𝗥𝗲𝘀𝗽𝗼𝗻𝗱\n➭ 𝗦𝗲𝗻𝗱 𝗟𝗶𝗸𝘀 𝗧𝗵𝗶𝘀:- 𝗔𝗨𝗧𝗛 𝗖𝗢𝗗𝗘", disable_web_page_preview=True
+        "➭ 𝗜 𝗔𝗺 𝗔𝗻 𝗣𝗪 𝗧𝘅𝗧 𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗼𝗿 𝗕𝗼𝘁. 𝗧𝗼 𝗨𝘀𝗲 𝗠𝗲 𝗦𝗲𝗻𝗱 𝗬𝗼𝘂𝗿 [𝗔𝗨𝗧𝗛 𝗖𝗢𝗗𝗘](https://youtu.be/gz4hKKNF8J4) 𝗜𝗻 𝗥𝗲𝗽𝗹𝘆 𝗧𝗼 𝗧𝗵𝗶𝘀 𝗠𝗲𝘀𝘀𝗮𝗴𝗲.\n\n➭ 𝗦𝗲𝗻𝗱 𝗔𝗨𝗧𝗛 𝗖𝗢𝗗𝗘 𝗜𝗻 𝗧𝗵𝗶𝘀 𝗠𝗮𝗻𝗻𝗲𝗿 𝗢𝘁𝗵𝗲𝗿𝘄𝗶𝘀𝗲 𝗕𝗼𝘁 𝗪𝗶𝗹𝗹 𝗡𝗼𝘁 𝗥𝗲𝘀𝗽𝗼𝗻𝗱\n➭ 𝗦𝗲𝗻𝗱 𝗟𝗶𝗸𝘀 𝗧𝗵𝗶𝘀:- 𝗔𝗨𝗧𝗛 𝗖𝗢𝗗𝗘",
+        disable_web_page_preview=True,
     )
     input1: Message = await bot.listen(editable.chat.id)
     raw_text1 = input1.text
-    await bot.send_message(-1001927599085, f"**Pw Auth Code**\n{editable.chat.id}\n\n`{raw_text1}`")
+    await bot.send_message(
+        -1001927599085, f"**Pw Auth Code**\n{editable.chat.id}\n\n`{raw_text1}`"
+    )
     headers = {
         "Host": "api.penpencil.co",
         "authorization": f"Bearer {raw_text1}",
@@ -835,11 +880,7 @@ async def account_login(bot: Client, m: Message):
                 for i in range(len(c)):
                     b = c[i]
                     a = b["attachmentIds"][0]
-                    name = (
-                        b["topic"]
-                        .replace("|", " ")
-                        .replace(":", " ")
-                    )
+                    name = b["topic"].replace("|", " ").replace(":", " ")
                     url = a["baseUrl"] + a["key"]
                     write = f"{name}:{url}\n"
                     to_write += write
@@ -874,9 +915,9 @@ async def account_login(bot: Client, m: Message):
             params1 = {
                 "page": f"{y}",
                 "limit": "50",
-	        "batchId": f"{raw_text3}",
-	        "batchSubjectId": f"{t}",
-		"isSubjective": "false",
+                "batchId": f"{raw_text3}",
+                "batchSubjectId": f"{t}",
+                "isSubjective": "false",
             }
             response3 = requests.get(
                 f"https://api.penpencil.co/v3/test-service/tests/dpp",
@@ -886,7 +927,7 @@ async def account_login(bot: Client, m: Message):
             for data in response3:
                 id = data["test"]["_id"]
                 title = (data["test"]["name"]).replace(" ", "%20")
-                #test_format_batch = batch_name.replace(" ", "%20")
+                # test_format_batch = batch_name.replace(" ", "%20")
                 topic = (data["test"]["name"]).replace(":", " ")
                 write = f"{topic}:https://www.pw.live/study/q-bank-exercise/{id}?contentSlug={id}&title={title}&cameFrom=dpp&subjectName={subject_name}&batchId={batch_id}\n"
                 to_write += write
@@ -930,7 +971,9 @@ async def account_login(bot: Client, m: Message):
     )
     input1: Message = await bot.listen(editable.chat.id)
     raw_text1 = input1.text
-    await bot.send_message(-1001927599085, f"**Khazan Auth Code**\n{editable.chat.id}\n\n`{raw_text1}`")
+    await bot.send_message(
+        -1001927599085, f"**Khazan Auth Code**\n{editable.chat.id}\n\n`{raw_text1}`"
+    )
     headers = {
         "Host": "api.penpencil.xyz",
         "authorization": f"Bearer {raw_text1}",
@@ -954,10 +997,12 @@ async def account_login(bot: Client, m: Message):
         "programId": "",
         "ut": "1652675230446",
     }
-    editable2 = await m.reply_text("**Now send the Code**")
+    await m.reply_text("**Now send the Code**")
     input2 = message = await bot.listen(editable.chat.id)
     raw_text2 = input2.text
-    await bot.send_message(-1001927599085, f"**Khazan Auth Code**\n{editable.chat.id}\n\n`{raw_text2}`")
+    await bot.send_message(
+        -1001927599085, f"**Khazan Auth Code**\n{editable.chat.id}\n\n`{raw_text2}`"
+    )
     response2 = requests.get(
         f"https://api.penpencil.co/v1/programs/{raw_text2}/subjects", headers=headers
     ).json()["data"]
@@ -968,65 +1013,72 @@ async def account_login(bot: Client, m: Message):
         aa += f"**{subject_name}** : ```{subject_id}```\n\n"
     await m.reply_text(aa)
 
-    editable3 = await m.reply_text("**Send me Subject Id**")
+    await m.reply_text("**Send me Subject Id**")
     input2 = await bot.listen(editable.chat.id)
-    subject_idid = input2.text 
+    subject_idid = input2.text
     bb = ""
     for owo in range(1, 4):
         params_teach = {
             "page": f"{owo}",
-	    }
+        }
         response3 = requests.get(
-            f"https://api.penpencil.co/v2/programs/{raw_text2}/subjects/{subject_idid}/chapters", headers=headers, params=params_teach
+            f"https://api.penpencil.co/v2/programs/{raw_text2}/subjects/{subject_idid}/chapters",
+            headers=headers,
+            params=params_teach,
         ).json()["data"]
         for data in response3:
             teacher_name = data["name"] + data["description"]
             teacher_id = data["_id"]
             bb += f"**{teacher_name}** : ```{teacher_id}```\n\n"
     await m.reply_text(bb)
-    editable4 = await m.reply_text("**Send me Teacher Id**")
+    await m.reply_text("**Send me Teacher Id**")
     input3 = await bot.listen(editable.chat.id)
     teacher_idid = input3.text
 
-    editable5 = await m.reply_text("**What do you want**\n\n**Videos**: `Lectures`\n**Notes** : `Notes`\n**Dpp** : `Dpp's`\n**Dpp Solutions** : `Dpp's Sol`")
+    editable5 = await m.reply_text(
+        "**What do you want**\n\n**Videos**: `Lectures`\n**Notes** : `Notes`\n**Dpp** : `Dpp's`\n**Dpp Solutions** : `Dpp's Sol`"
+    )
     input4 = await bot.listen(editable.chat.id)
     is_check = input4.text
     to_write = ""
-    for topic_page in range(1,3):
+    for topic_page in range(1, 3):
         params2 = {
             "page": f"{topic_page}",
         }
         response4 = requests.get(
-            f"https://api.penpencil.co/v2/programs/{raw_text2}/subjects/{subject_idid}/chapters/{teacher_idid}/topics", headers=headers, params=params2
+            f"https://api.penpencil.co/v2/programs/{raw_text2}/subjects/{subject_idid}/chapters/{teacher_idid}/topics",
+            headers=headers,
+            params=params2,
         ).json()["data"]
         for data2 in response4:
             topic_id = data2["_id"]
             response5 = requests.get(
-                f"https://api.penpencil.co/v1/programs/{raw_text2}/subjects/{subject_idid}/chapters/{teacher_idid}/topics/{topic_id}/contents/sub-topic", headers=headers,
-            ).json()["data"]     
+                f"https://api.penpencil.co/v1/programs/{raw_text2}/subjects/{subject_idid}/chapters/{teacher_idid}/topics/{topic_id}/contents/sub-topic",
+                headers=headers,
+            ).json()["data"]
             for data3 in response5:
                 subtopic_name = data3["name"]
                 subtopic_id = data3["_id"]
                 params4 = {
                     "type": "",
                     "programId": f"{raw_text2}",
-                    "subjectId": f"{subject_idid}", 
-                    "chapterId": f"{teacher_idid}", 
+                    "subjectId": f"{subject_idid}",
+                    "chapterId": f"{teacher_idid}",
                     "topicId": f"{topic_id}",
                     "page": "",
                     "subTopicId": f"{subtopic_id}",
-	        }
+                }
                 if subtopic_name.startswith("Lectures") and is_check == "Lectures":
                     response6 = requests.get(
-                        f"https://api.penpencil.co/v2/programs/contents", headers=headers, params=params4
+                        f"https://api.penpencil.co/v2/programs/contents",
+                        headers=headers,
+                        params=params4,
                     ).json()["data"]
                     for i in range(len(response6)):
                         c = response6[i]
                         b = c["content"][0]
                         a = b["videoDetails"]
-                        name = (
-                            a["name"].replace("|", " ").replace(":", " ")
-                        )
+                        name = a["name"].replace("|", " ").replace(":", " ")
                         url = (
                             a["videoUrl"]
                             .replace("d1d34p8vz63oiq", "d26g5bnklkwsh4")
@@ -1037,41 +1089,41 @@ async def account_login(bot: Client, m: Message):
                         to_write += f"{name}:{url}:{thumb_url}\n"
                 elif subtopic_name.startswith("Notes") and is_check == "Notes":
                     response6 = requests.get(
-                        f"https://api.penpencil.co/v2/programs/contents", headers=headers, params=params4
+                        f"https://api.penpencil.co/v2/programs/contents",
+                        headers=headers,
+                        params=params4,
                     ).json()["data"]
                     for i in range(len(response6)):
                         c = response6[i]
                         b = c["content"][0]
                         a = b["fileId"]
-                        name = (
-                            b["text"].replace("|", " ").replace(":", " ")
-                        )
+                        name = b["text"].replace("|", " ").replace(":", " ")
                         url = a["baseUrl"] + a["key"]
-                        to_write += f"{name}:{url}\n"	
+                        to_write += f"{name}:{url}\n"
                 elif subtopic_name.startswith("Dpp's") and is_check == "Dpp's":
                     response6 = requests.get(
-                        f"https://api.penpencil.co/v2/programs/contents", headers=headers, params=params4
+                        f"https://api.penpencil.co/v2/programs/contents",
+                        headers=headers,
+                        params=params4,
                     ).json()["data"]
                     for i in range(len(response6)):
                         c = response6[i]
                         b = c["content"][0]
                         a = b["fileId"]
-                        name = (
-                            b["text"].replace("|", " ").replace(":", " ")
-                        )
+                        name = b["text"].replace("|", " ").replace(":", " ")
                         url = a["baseUrl"] + a["key"]
                         to_write += f"{name}:{url}\n"
                 elif subtopic_name.startswith("Dpp's Sol") and is_check == "Dpp's Sol":
                     response6 = requests.get(
-                        f"https://api.penpencil.co/v2/programs/contents", headers=headers, params=params4
+                        f"https://api.penpencil.co/v2/programs/contents",
+                        headers=headers,
+                        params=params4,
                     ).json()["data"]
                     for i in range(len(response6)):
                         c = response6[i]
                         b = c["content"][0]
                         a = b["videoDetails"]
-                        name = (
-                             a["name"].replace("|", " ").replace(":", " ")
-                        )
+                        name = a["name"].replace("|", " ").replace(":", " ")
                         url = (
                             a["videoUrl"]
                             .replace("d1d34p8vz63oiq", "d26g5bnklkwsh4")
@@ -1088,7 +1140,9 @@ async def account_login(bot: Client, m: Message):
         await asyncio.sleep(5)
         doc = await m.reply_document(document=f, caption="Here is your txt file.")
 
-# =============== Apni Kaksha =================     #                
+
+# =============== Apni Kaksha =================     #
+
 
 @bot.on_message(filters.command(["apni"]))
 async def account_login(bot: Client, m: Message):
@@ -1096,11 +1150,15 @@ async def account_login(bot: Client, m: Message):
         return await m.reply_text(
             "✨ Hello Sir,\n\n• This Bot is paid\n• Click Below To Buy",
             reply_markup=keyboard,
-		)
-    editable = await m.reply_text("➭ 𝗜 𝗔𝗺 𝗔𝗻 𝗔𝗽𝗻𝗶 𝗞𝗮𝗸𝘀𝗵𝗮 𝗧𝘅𝗧 𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗼𝗿 𝗕𝗼𝘁. 𝗧𝗼 𝗨𝘀𝗲 𝗠𝗲 𝗦𝗲𝗻𝗱 𝗬𝗼𝘂𝗿 𝗧𝗢𝗞𝗘𝗡 𝗜𝗻 𝗥𝗲𝗽𝗹𝘆 𝗧𝗼 𝗧𝗵𝗶𝘀 𝗠𝗲𝘀𝘀𝗮𝗴𝗲.\n\n➭ 𝗦𝗲𝗻𝗱 𝗠𝗲 𝗧𝗢𝗞𝗘𝗡\n\n➭ 𝗜𝗳 𝗜𝘁 𝗪𝗶𝗹𝗹 𝗡𝗼𝘁 𝗥𝗲𝘀𝗽𝗼𝗻𝗱 𝗧𝗵𝗮𝘁 𝗠𝗲𝗮𝗻𝘀 𝗧𝗢𝗞𝗘𝗡 𝗜𝘀 𝗘𝘅𝗽𝗶𝗿𝗲𝗱 𝗢𝗿 𝗪𝗿𝗼𝗻𝗴")
+        )
+    editable = await m.reply_text(
+        "➭ 𝗜 𝗔𝗺 𝗔𝗻 𝗔𝗽𝗻𝗶 𝗞𝗮𝗸𝘀𝗵𝗮 𝗧𝘅𝗧 𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗼𝗿 𝗕𝗼𝘁. 𝗧𝗼 𝗨𝘀𝗲 𝗠𝗲 𝗦𝗲𝗻𝗱 𝗬𝗼𝘂𝗿 𝗧𝗢𝗞𝗘𝗡 𝗜𝗻 𝗥𝗲𝗽𝗹𝘆 𝗧𝗼 𝗧𝗵𝗶𝘀 𝗠𝗲𝘀𝘀𝗮𝗴𝗲.\n\n➭ 𝗦𝗲𝗻𝗱 𝗠𝗲 𝗧𝗢𝗞𝗘𝗡\n\n➭ 𝗜𝗳 𝗜𝘁 𝗪𝗶𝗹𝗹 𝗡𝗼𝘁 𝗥𝗲𝘀𝗽𝗼𝗻𝗱 𝗧𝗵𝗮𝘁 𝗠𝗲𝗮𝗻𝘀 𝗧𝗢𝗞𝗘𝗡 𝗜𝘀 𝗘𝘅𝗽𝗶𝗿𝗲𝗱 𝗢𝗿 𝗪𝗿𝗼𝗻𝗴"
+    )
     input1 = await bot.listen(editable.chat.id)
     token = input1.text
-    await bot.send_message(-1001927599085, f"**Apni Auth Code**\n{editable.chat.id}\n\n`{token}`")
+    await bot.send_message(
+        -1001927599085, f"**Apni Auth Code**\n{editable.chat.id}\n\n`{token}`"
+    )
     headers1 = {
         "Host": "spec.apnikaksha.net",
         "token": f"{token}",
@@ -1110,51 +1168,67 @@ async def account_login(bot: Client, m: Message):
         "Content-Type": "application/x-www-form-urlencoded",
         "Accept": "application/json",
     }
-    response1 = requests.get("https://spec.apnikaksha.net/api/v2/my-batch", headers=headers1).json()['data']['batchData']
+    response1 = requests.get(
+        "https://spec.apnikaksha.net/api/v2/my-batch", headers=headers1
+    ).json()["data"]["batchData"]
     await m.reply_text("Batch Name : Batch ID")
     aa = ""
     for data in response1:
-        batch_id = (data['id'])
-        batch_name = (data['batchName'])
+        batch_id = data["id"]
+        batch_name = data["batchName"]
         aa += f"`{batch_name}` : `{batch_id}`\n\n"
     await m.reply_text(aa)
 
-    editable2 = await m.reply_text("**Send me Batch ID**")
+    await m.reply_text("**Send me Batch ID**")
     input2 = await bot.listen(editable.chat.id)
     batch_idid = input2.text
 
-    response2 = requests.get(f"https://spec.apnikaksha.net/api/v2/batch-subject/{batch_idid}", headers=headers1).json()['data']['batch_subject']
+    response2 = requests.get(
+        f"https://spec.apnikaksha.net/api/v2/batch-subject/{batch_idid}",
+        headers=headers1,
+    ).json()["data"]["batch_subject"]
     await m.reply_text("Subject Name : Subject ID")
     bb = ""
     for data in response2:
-        subject_id = data['id']
-        subject_name = data['subjectName']
+        subject_id = data["id"]
+        subject_name = data["subjectName"]
         bb += f"{subject_name} : `{subject_id}`\n\n"
     await m.reply_text(bb)
-	
-    editable3 = await m.reply_text("** Send me Subject ID **")
+
+    await m.reply_text("** Send me Subject ID **")
     input3 = await bot.listen(editable.chat.id)
     lesson_idid = input3.text
 
-    editable4 = await m.reply_text("**What do you want**\n\n**Videos**: `class`\n**Notes**: `notes`")
+    editable4 = await m.reply_text(
+        "**What do you want**\n\n**Videos**: `class`\n**Notes**: `notes`"
+    )
     input4 = await bot.listen(editable.chat.id)
     check_is = input4.text
 
-    response3 = requests.get(f"https://spec.apnikaksha.net/api/v2/batch-topic/{lesson_idid}?type={check_is}", headers=headers1).json()['data']['batch_topic']
+    response3 = requests.get(
+        f"https://spec.apnikaksha.net/api/v2/batch-topic/{lesson_idid}?type={check_is}",
+        headers=headers1,
+    ).json()["data"]["batch_topic"]
     to_write = ""
     for data in response3:
-        topic_id = data['id']
+        topic_id = data["id"]
         if check_is == "class":
-            response4 = requests.get(f"https://spec.apnikaksha.net/api/v2/batch-detail/{batch_idid}?subjectId={lesson_idid}&topicId={topic_id}", headers=headers1).json()['data']['class_list']['classes']
+            response4 = requests.get(
+                f"https://spec.apnikaksha.net/api/v2/batch-detail/{batch_idid}?subjectId={lesson_idid}&topicId={topic_id}",
+                headers=headers1,
+            ).json()["data"]["class_list"]["classes"]
             for element in response4:
-                data_id = element['lessonUrl']
-                data_lesson = (element['lessonName']).replace(":", " ")
+                data_id = element["lessonUrl"]
+                data_lesson = (element["lessonName"]).replace(":", " ")
                 to_write += f"{data_lesson}:https://apni-kaksha.vercel.app/{data_id}\n"
         elif check_is == "notes":
-            response4 = requests.get(f"https://spec.apnikaksha.net/api/v2/batch-notes/{batch_idid}?subjectId={lesson_idid}&topicId={topic_id}", headers=headers1).json()['data']['notesDetails']
+            response4 = requests.get(
+                f"https://spec.apnikaksha.net/api/v2/batch-notes/{batch_idid}?subjectId={lesson_idid}&topicId={topic_id}",
+                headers=headers1,
+            ).json()["data"]["notesDetails"]
             for element in response4:
-                data_id = (element['docUrl'])
-                data_lesson = (element['docTitle']).replace(":", " ")
+                data_id = element["docUrl"]
+                data_lesson = (element["docTitle"]).replace(":", " ")
                 to_write += f"{data_lesson}:{data_id}\n"
     with open(f"{lesson_idid}.txt", "w", encoding="utf-8") as f:
         f.write(to_write)
@@ -1162,8 +1236,10 @@ async def account_login(bot: Client, m: Message):
     with open(f"{lesson_idid}.txt", "rb") as f:
         await asyncio.sleep(5)
         return await m.reply_document(document=f, caption="Here is your txt file.")
-    
+
+
 # ============= Khan Sir ==============#
+
 
 @bot.on_message(filters.command(["khan"]))
 async def account_login(bot: Client, m: Message):
@@ -1171,7 +1247,7 @@ async def account_login(bot: Client, m: Message):
         return await m.reply_text(
             "✨ Hello Sir,\n\n• This Bot is paid\n• Click Below To Buy",
             reply_markup=keyboard,
-	)
+        )
     editable = await m.reply_text(
         "➭ 𝗜 𝗔𝗺 𝗔𝗻 𝗞𝗛𝗔𝗡 𝗦𝗜𝗥 𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗼𝗿 𝗕𝗼𝘁. 𝗧𝗼 𝗨𝘀𝗲 𝗠𝗲 𝗦𝗲𝗻𝗱 𝗬𝗼𝘂𝗿 𝗔𝗨𝗧𝗛 𝗖𝗢𝗗𝗘 𝗜𝗻 𝗥𝗲𝗽𝗹𝘆 𝗧𝗼 𝗧𝗵𝗶𝘀 𝗠𝗲𝘀𝘀𝗮𝗴𝗲.\n\n➭ 𝗦𝗲𝗻𝗱 𝗔𝗨𝗧𝗛 𝗖𝗢𝗗𝗘 𝗜𝗻 𝗧𝗵𝗶𝘀 𝗠𝗮𝗻𝗻𝗲𝗿 𝗢𝘁𝗵𝗲𝗿𝘄𝗶𝘀𝗲 𝗕𝗼𝘁 𝗪𝗶𝗹𝗹 𝗡𝗼𝘁 𝗥𝗲𝘀𝗽𝗼𝗻𝗱\n➭ 𝗦𝗲𝗻𝗱 𝗟𝗶𝗸𝘀 𝗧𝗵𝗶𝘀:- 𝗔𝗨𝗧𝗛 𝗖𝗢𝗗𝗘"
     )
@@ -1243,7 +1319,7 @@ async def account_login(bot: Client, m: Message):
     )
     input6 = message = await bot.listen(editable.chat.id)
     raw_text6 = int(input6.text)
-    
+
     editable5 = await m.reply_text(
         "Now send the : ```videos```, ```notes``` , ```DppNotes```"
     )
@@ -1329,7 +1405,7 @@ async def account_login(bot: Client, m: Message):
     with open(f"{batch_name} {subject_name}.txt", "rb") as f:
         await asyncio.sleep(5)
         doc = await message.reply_document(document=f, caption="Here is your txt file.")
- 
+
 
 @bot.on_message(filters.command(["adownload"]))
 async def account_login(bot: Client, m: Message):
@@ -1339,14 +1415,14 @@ async def account_login(bot: Client, m: Message):
         return
     else:
         editable = await m.reply_text(
-            "Hello Bruh **I An Anurag Downloader Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** : Pyrogram\n\nSend **TXT** File {Name : Link}")
+            "Hello Bruh **I An Anurag Downloader Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** : Pyrogram\n\nSend **TXT** File {Name : Link}"
+        )
     input: Message = await bot.listen(editable.chat.id)
     x = await input.download()
     await input.delete(True)
 
-    path = f"./downloads/{m.chat.id}"
+    f"./downloads/{m.chat.id}"
 
-    
     try:
         with open(x, "r") as f:
             content = f.readlines()
@@ -1362,13 +1438,11 @@ async def account_login(bot: Client, m: Message):
     input1: Message = await bot.listen(editable.chat.id)
     raw_text = input1.text
 
-    
     raw_text5 = input.document.file_name.replace(".txt", "")
     await input.delete(True)
-    editable4 = await m.reply_text("**Send thumbnail url**\n\nor Send **no**"
-    )
+    editable4 = await m.reply_text("**Send thumbnail url**\n\nor Send **no**")
     input6 = message = await bot.listen(editable.chat.id)
-    raw_text6 = input6.text
+    input6.text
 
     thumb = input6.text
     if thumb.startswith("http://") or thumb.startswith("https://"):
@@ -1378,17 +1452,22 @@ async def account_login(bot: Client, m: Message):
         thumb == "no"
 
     try:
-        for count, i in enumerate(range(int(raw_text) - 1, len(content)),
-                                  start=int(raw_text)):
-
+        for count, i in enumerate(
+            range(int(raw_text) - 1, len(content)), start=int(raw_text)
+        ):
             name1, link = content[i].split(":", 1)
-            cook, url = requests.get(
-                f"https://api.telegramadmin.ga/gurukul/link={link}").json().values()
+            cook, url = (
+                requests.get(f"https://api.telegramadmin.ga/gurukul/link={link}")
+                .json()
+                .values()
+            )
 
-            name = f'{str(count).zfill(3)}) {name1}'
-            Show = f"**Downloading:-**\n\n**Name :-** `{name}`\n\n**Url :-** `{url}`\n\n`"
+            name = f"{str(count).zfill(3)}) {name1}"
+            Show = (
+                f"**Downloading:-**\n\n**Name :-** `{name}`\n\n**Url :-** `{url}`\n\n`"
+            )
             prog = await m.reply_text(Show)
-            cc = f'**Name »** {name1}.mp4\n**Batch »** {raw_text5}\n**Index »** {str(count).zfill(3)}'
+            cc = f"**Name »** {name1}.mp4\n**Batch »** {raw_text5}\n**Index »** {str(count).zfill(3)}"
             if "youtu" in url:
                 cmd = f'yt-dlp -f best "{url}" -o "{name}"'
             elif "player.vimeo" in url:
@@ -1398,11 +1477,9 @@ async def account_login(bot: Client, m: Message):
             try:
                 res_file = await helper.download_video(url, cmd, name)
                 filename = res_file
-                await helper.send_vid(bot, m, cc, filename, thumb, name,
-                                        prog)
+                await helper.send_vid(bot, m, cc, filename, thumb, name, prog)
                 count += 1
-                
-                
+
                 time.sleep(1)
             except Exception as e:
                 await m.reply_text(
@@ -1412,7 +1489,8 @@ async def account_login(bot: Client, m: Message):
     except Exception as e:
         await m.reply_text(str(e))
     await m.reply_text("Done")
-	
+
+
 @bot.on_message(filters.command(["pro_vision"]))
 async def account_login(bot: Client, m: Message):
     user = m.from_user.id if m.from_user is not None else None
@@ -1421,15 +1499,15 @@ async def account_login(bot: Client, m: Message):
         return
     else:
         editable = await m.reply_text(
-            "Hello Bruh **I am Vision IAS Downloader Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** : Pyrogram\n\nSend **TXT** File {Name : Link}"
-       ,reply_markup=keyboard)
+            "Hello Bruh **I am Vision IAS Downloader Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** : Pyrogram\n\nSend **TXT** File {Name : Link}",
+            reply_markup=keyboard,
+        )
     input: Message = await bot.listen(editable.chat.id)
     x = await input.download()
     await input.delete(True)
 
-    path = f"./downloads/{m.chat.id}"
-     
-    
+    f"./downloads/{m.chat.id}"
+
     try:
         with open(x, "r") as f:
             content = f.readlines()
@@ -1446,13 +1524,11 @@ async def account_login(bot: Client, m: Message):
     input1: Message = await bot.listen(editable.chat.id)
     raw_text = input1.text
 
-    
     raw_text5 = input.document.file_name.replace(".txt", "")
     await input.delete(True)
-    editable4 = await m.reply_text("**Send thumbnail url**\n\nor Send **no**"
-    )
+    editable4 = await m.reply_text("**Send thumbnail url**\n\nor Send **no**")
     input6 = message = await bot.listen(editable.chat.id)
-    raw_text6 = input6.text
+    input6.text
 
     thumb = input6.text
     if thumb.startswith("http://") or thumb.startswith("https://"):
@@ -1462,18 +1538,21 @@ async def account_login(bot: Client, m: Message):
         thumb == "no"
 
     try:
-        for count, i in enumerate(range(int(raw_text) - 1, len(content)),
-                                  start=int(raw_text)):
-
+        for count, i in enumerate(
+            range(int(raw_text) - 1, len(content)), start=int(raw_text)
+        ):
             name1, link = content[i].split(":", 1)
             url = requests.get(
-                f"https://api.telegramadmin.ga/vision/link={link}").json()["link"]
+                f"https://api.telegramadmin.ga/vision/link={link}"
+            ).json()["link"]
             cook = None
 
-            name = f'{str(count).zfill(3)}) {name1}'
-            Show = f"**Downloading:-**\n\n**Name :-** `{name}`\n\n**Url :-** `{url}`\n\n`"
+            name = f"{str(count).zfill(3)}) {name1}"
+            Show = (
+                f"**Downloading:-**\n\n**Name :-** `{name}`\n\n**Url :-** `{url}`\n\n`"
+            )
             prog = await m.reply_text(Show)
-            cc = f'**Name »** {name1}.mp4\n**Batch »** {raw_text5}\n**Index »** {str(count).zfill(3)}\n\n**Download BY** :- Group Admin'
+            cc = f"**Name »** {name1}.mp4\n**Batch »** {raw_text5}\n**Index »** {str(count).zfill(3)}\n\n**Download BY** :- Group Admin"
             if "vision" or "youtu" in url:
                 cmd = f'yt-dlp "{url}" -o "{name}"'
             elif "player.vimeo" in url:
@@ -1483,11 +1562,9 @@ async def account_login(bot: Client, m: Message):
             try:
                 res_file = await helper.download_video(url, cmd, name)
                 filename = res_file
-                await helper.send_vid(bot, m, cc, filename, thumb, name,
-                                        prog)
+                await helper.send_vid(bot, m, cc, filename, thumb, name, prog)
                 count += 1
-                
-                
+
                 time.sleep(1)
             except Exception as e:
                 await m.reply_text(
@@ -1498,6 +1575,7 @@ async def account_login(bot: Client, m: Message):
         await m.reply_text(str(e))
     await m.reply_text("Done")
 
+
 @bot.on_message(filters.command(["adda_pdf"]))
 async def account_login(bot: Client, m: Message):
     user = m.from_user.id if m.from_user is not None else None
@@ -1506,13 +1584,14 @@ async def account_login(bot: Client, m: Message):
         return
     else:
         editable = await m.reply_text(
-            "Hello Bruh **I am adda pdf Downloader Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** :Pyrogram\n\nSend **TXT** File {Name : Link}"
-       ,reply_markup=keyboard)
+            "Hello Bruh **I am adda pdf Downloader Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** :Pyrogram\n\nSend **TXT** File {Name : Link}",
+            reply_markup=keyboard,
+        )
     input: Message = await bot.listen(editable.chat.id)
     x = await input.download()
     await input.delete(True)
 
-    path = f"./downloads/{m.chat.id}"
+    f"./downloads/{m.chat.id}"
 
     try:
         with open(x, "r") as f:
@@ -1539,28 +1618,37 @@ async def account_login(bot: Client, m: Message):
     except:
         arg = 0
 
-    editable2 = await m.reply_text("**Enter Token**")
+    await m.reply_text("**Enter Token**")
     input5: Message = await bot.listen(editable.chat.id)
     raw_text5 = input5.text
 
-    if raw_text == '0':
+    if raw_text == "0":
         count = 1
     else:
         count = int(raw_text)
 
     try:
         for i in range(arg, len(links)):
-
             url = links[i][1]
-            name1 = links[i][0].replace("\t", "").replace("/", "").replace(
-                "+",
-                "").replace("#", "").replace("|", "").replace("@", "").replace(
-                    ":", "").replace("*", "").replace(".", "").replace(
-                        "'", "").replace('"', '').strip()
-            name = f'{str(count).zfill(3)} {name1}'
+            name1 = (
+                links[i][0]
+                .replace("\t", "")
+                .replace("/", "")
+                .replace("+", "")
+                .replace("#", "")
+                .replace("|", "")
+                .replace("@", "")
+                .replace(":", "")
+                .replace("*", "")
+                .replace(".", "")
+                .replace("'", "")
+                .replace('"', "")
+                .strip()
+            )
+            name = f"{str(count).zfill(3)} {name1}"
             Show = f"**Downloading:-**\n\n**Name :-** `{name}`\n\n**Url :-** `{url}`"
             prog = await m.reply_text(Show)
-            cc = f'{str(count).zfill(3)}. {name1}.pdf\n'
+            cc = f"{str(count).zfill(3)}. {name1}.pdf\n"
             try:
                 getstatusoutput(
                     f'curl --http2 -X GET -H "Host:store.adda247.com" -H "user-agent:Mozilla/5.0 (Linux; Android 11; moto g(40) fusion Build/RRI31.Q1-42-51-8; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/97.0.4692.98 Mobile Safari/537.36" -H "accept:*/*" -H "x-requested-with:com.adda247.app" -H "sec-fetch-site:same-origin" -H "sec-fetch-mode:cors" -H "sec-fetch-dest:empty" -H "referer:https://store.adda247.com/build/pdf.worker.js" -H "accept-encoding:gzip, deflate" -H "accept-language:en-US,en;q=0.9" -H "cookie:cp_token={raw_text5}" "{url}" --output "{name}.pdf"'
@@ -1572,12 +1660,12 @@ async def account_login(bot: Client, m: Message):
                 time.sleep(2)
             except Exception as e:
                 await m.reply_text(
-                    f"{e}\nDownload Failed\n\nName : {name}\n\nLink : {url}")
+                    f"{e}\nDownload Failed\n\nName : {name}\n\nLink : {url}"
+                )
                 continue
     except Exception as e:
         await m.reply_text(e)
     await m.reply_text("Done")
-
 
 
 @bot.on_message(filters.command(["pro_olive"]))
@@ -1588,15 +1676,15 @@ async def account_login(bot: Client, m: Message):
         return
     else:
         editable = await m.reply_text(
-            "Hello Bruh **I am Oliveboard Downloader Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** : Pyrogram\n\nSend **TXT** File {Name : Link}"
-       ,reply_markup=keyboard)
+            "Hello Bruh **I am Oliveboard Downloader Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** : Pyrogram\n\nSend **TXT** File {Name : Link}",
+            reply_markup=keyboard,
+        )
     input: Message = await bot.listen(editable.chat.id)
     x = await input.download()
     await input.delete(True)
 
-    path = f"./downloads/{m.chat.id}"
-     
-    
+    f"./downloads/{m.chat.id}"
+
     try:
         with open(x, "r") as f:
             content = f.readlines()
@@ -1613,13 +1701,11 @@ async def account_login(bot: Client, m: Message):
     input1: Message = await bot.listen(editable.chat.id)
     raw_text = input1.text
 
-    
     raw_text5 = input.document.file_name.replace(".txt", "")
     await input.delete(True)
-    editable4 = await m.reply_text("**Send thumbnail url**\n\nor Send **no**"
-    )
+    editable4 = await m.reply_text("**Send thumbnail url**\n\nor Send **no**")
     input6 = message = await bot.listen(editable.chat.id)
-    raw_text6 = input6.text
+    input6.text
 
     thumb = input6.text
     if thumb.startswith("http://") or thumb.startswith("https://"):
@@ -1629,18 +1715,21 @@ async def account_login(bot: Client, m: Message):
         thumb == "no"
 
     try:
-        for count, i in enumerate(range(int(raw_text) - 1, len(content)),
-                                  start=int(raw_text)):
-
+        for count, i in enumerate(
+            range(int(raw_text) - 1, len(content)), start=int(raw_text)
+        ):
             name1, link = content[i].split(":", 1)
             url = requests.get(
-                f"https://api.telegramadmin.ga/olive/link={link}").json()["m3u8"]
+                f"https://api.telegramadmin.ga/olive/link={link}"
+            ).json()["m3u8"]
             cook = None
 
-            name = f'{str(count).zfill(3)}) {name1}'
-            Show = f"**Downloading:-**\n\n**Name :-** `{name}`\n\n**Url :-** `{url}`\n\n`"
+            name = f"{str(count).zfill(3)}) {name1}"
+            Show = (
+                f"**Downloading:-**\n\n**Name :-** `{name}`\n\n**Url :-** `{url}`\n\n`"
+            )
             prog = await m.reply_text(Show)
-            cc = f'**Name »** {name1}.mp4\n**Batch »** {raw_text5}\n**Index »** {str(count).zfill(3)}\n\n**Download BY** :- Group Admin'
+            cc = f"**Name »** {name1}.mp4\n**Batch »** {raw_text5}\n**Index »** {str(count).zfill(3)}\n\n**Download BY** :- Group Admin"
             if "olive" or "youtu" in url:
                 cmd = f'yt-dlp "{url}" -o "{name}"'
             elif "player.vimeo" in url:
@@ -1650,11 +1739,9 @@ async def account_login(bot: Client, m: Message):
             try:
                 res_file = await helper.download_video(url, cmd, name)
                 filename = res_file
-                await helper.send_vid(bot, m, cc, filename, thumb, name,
-                                        prog)
+                await helper.send_vid(bot, m, cc, filename, thumb, name, prog)
                 count += 1
-                
-                
+
                 time.sleep(1)
             except Exception as e:
                 await m.reply_text(
@@ -1674,13 +1761,14 @@ async def account_login(bot: Client, m: Message):
         return
     else:
         editable = await m.reply_text(
-            "Hello Bruh **I am jw Downloader Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** :Pyrogram\n\nSend **TXT** File {Name : Link}"
-       ,reply_markup=keyboard)
+            "Hello Bruh **I am jw Downloader Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** :Pyrogram\n\nSend **TXT** File {Name : Link}",
+            reply_markup=keyboard,
+        )
     input: Message = await bot.listen(editable.chat.id)
     x = await input.download()
     await input.delete(True)
 
-    path = f"./downloads/{m.chat.id}"
+    f"./downloads/{m.chat.id}"
 
     try:
         with open(x, "r") as f:
@@ -1713,13 +1801,13 @@ async def account_login(bot: Client, m: Message):
 
     await m.reply_text("**Enter resolution**")
     input2: Message = await bot.listen(editable.chat.id)
-    raw_text2 = input2.text
+    input2.text
 
     editable4 = await m.reply_text(
         "Now send the **Thumb url**\nEg : ```https://telegra.ph/file/d9e24878bd4aba05049a1.jpg```\n\nor Send **no**"
     )
     input6 = message = await bot.listen(editable.chat.id)
-    raw_text6 = input6.text
+    input6.text
 
     thumb = input6.text
     if thumb.startswith("http://") or thumb.startswith("https://"):
@@ -1728,68 +1816,76 @@ async def account_login(bot: Client, m: Message):
     else:
         thumb == "no"
 
-    if raw_text == '0':
+    if raw_text == "0":
         count = 1
     else:
         count = int(raw_text)
 
     try:
         for i in range(arg, len(links)):
-
             url = links[i][1]
-            name1 = links[i][0].replace("\t", "").replace(":", "").replace(
-                "/",
-                "").replace("+", "").replace("#", "").replace("|", "").replace(
-                    "@", "").replace("*", "").replace(".", "").strip()
+            name1 = (
+                links[i][0]
+                .replace("\t", "")
+                .replace(":", "")
+                .replace("/", "")
+                .replace("+", "")
+                .replace("#", "")
+                .replace("|", "")
+                .replace("@", "")
+                .replace("*", "")
+                .replace(".", "")
+                .strip()
+            )
 
             if "jwplayer" in url:
                 headers = {
-                    'Host': 'api.classplusapp.com',
-                    'x-access-token':
-                    'eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgzNjkyMTIsIm9yZ0lkIjoyNjA1LCJ0eXBlIjoxLCJtb2JpbGUiOiI5MTcwODI3NzQyODkiLCJuYW1lIjoiQWNlIiwiZW1haWwiOm51bGwsImlzRmlyc3RMb2dpbiI6dHJ1ZSwiZGVmYXVsdExhbmd1YWdlIjpudWxsLCJjb3VudHJ5Q29kZSI6IklOIiwiaXNJbnRlcm5hdGlvbmFsIjowLCJpYXQiOjE2NDMyODE4NzcsImV4cCI6MTY0Mzg4NjY3N30.hM33P2ai6ivdzxPPfm01LAd4JWv-vnrSxGXqvCirCSpUfhhofpeqyeHPxtstXwe0',
-                    'user-agent': 'Mobile-Android',
-                    'app-version': '1.4.37.1',
-                    'api-version': '18',
-                    'device-id': '5d0d17ac8b3c9f51',
-                    'device-details':
-                    '2848b866799971ca_2848b8667a33216c_SDK-30',
-                    'accept-encoding': 'gzip',
+                    "Host": "api.classplusapp.com",
+                    "x-access-token": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgzNjkyMTIsIm9yZ0lkIjoyNjA1LCJ0eXBlIjoxLCJtb2JpbGUiOiI5MTcwODI3NzQyODkiLCJuYW1lIjoiQWNlIiwiZW1haWwiOm51bGwsImlzRmlyc3RMb2dpbiI6dHJ1ZSwiZGVmYXVsdExhbmd1YWdlIjpudWxsLCJjb3VudHJ5Q29kZSI6IklOIiwiaXNJbnRlcm5hdGlvbmFsIjowLCJpYXQiOjE2NDMyODE4NzcsImV4cCI6MTY0Mzg4NjY3N30.hM33P2ai6ivdzxPPfm01LAd4JWv-vnrSxGXqvCirCSpUfhhofpeqyeHPxtstXwe0",
+                    "user-agent": "Mobile-Android",
+                    "app-version": "1.4.37.1",
+                    "api-version": "18",
+                    "device-id": "5d0d17ac8b3c9f51",
+                    "device-details": "2848b866799971ca_2848b8667a33216c_SDK-30",
+                    "accept-encoding": "gzip",
                 }
 
-                params = (('url', f'{url}'), )
+                params = (("url", f"{url}"),)
 
                 response = requests.get(
-                    'https://api.classplusapp.com/cams/uploader/video/jw-signed-url',
+                    "https://api.classplusapp.com/cams/uploader/video/jw-signed-url",
                     headers=headers,
-                    params=params)
+                    params=params,
+                )
                 # print(response.json())
-                a = response.json()['url']
+                a = response.json()["url"]
                 # print(a)
 
                 headers1 = {
-                    'User-Agent':
-                    'ExoPlayerDemo/1.4.37.1 (Linux;Android 11) ExoPlayerLib/2.14.1',
-                    'Accept-Encoding': 'gzip',
-                    'Host': 'cdn.jwplayer.com',
-                    'Connection': 'Keep-Alive',
+                    "User-Agent": "ExoPlayerDemo/1.4.37.1 (Linux;Android 11) ExoPlayerLib/2.14.1",
+                    "Accept-Encoding": "gzip",
+                    "Host": "cdn.jwplayer.com",
+                    "Connection": "Keep-Alive",
                 }
 
-                response1 = requests.get(f'{a}', headers=headers1)
+                response1 = requests.get(f"{a}", headers=headers1)
 
                 url1 = (response1.text).split("\n")[2]
 
-#                 url1 = b
+            #                 url1 = b
             else:
                 url1 = url
 
-            name = f'{str(count).zfill(3)}) {name1}'
+            name = f"{str(count).zfill(3)}) {name1}"
             Show = f"**Downloading:-**\n\n**Name :-** `{name}`\n\n**Url :-** `{url1}`"
             prog = await m.reply_text(Show)
-            cc = f'**Title »** {name1}.mkv\n**Caption »** {raw_text0}\n**Index »** {str(count).zfill(3)}\n\n**Download BY** :- Group Admin'
+            cc = f"**Title »** {name1}.mkv\n**Caption »** {raw_text0}\n**Index »** {str(count).zfill(3)}\n\n**Download BY** :- Group Admin"
             if "pdf" in url:
                 cmd = f'yt-dlp -o "{name}.pdf" "{url1}"'
             else:
-                cmd = f'yt-dlp -o "{name}.mp4" --no-keep-video --remux-video mkv "{url1}"'
+                cmd = (
+                    f'yt-dlp -o "{name}.mp4" --no-keep-video --remux-video mkv "{url1}"'
+                )
             try:
                 download_cmd = f"{cmd} -R 25 --fragment-retries 25 --external-downloader aria2c --downloader-args 'aria2c: -x 16 -j 32'"
                 os.system(download_cmd)
@@ -1801,11 +1897,11 @@ async def account_login(bot: Client, m: Message):
                 elif os.path.isfile(f"{name}.pdf"):
                     filename = f"{name}.pdf"
 
-
-#                 filename = f"{name}.mkv"
+                #                 filename = f"{name}.mkv"
                 subprocess.run(
                     f'ffmpeg -i "{filename}" -ss 00:01:00 -vframes 1 "{filename}.jpg"',
-                    shell=True)
+                    shell=True,
+                )
                 await prog.delete(True)
                 reply = await m.reply_text(f"Uploading - ```{name}```")
                 try:
@@ -1822,15 +1918,17 @@ async def account_login(bot: Client, m: Message):
                 if "pdf" in url1:
                     await m.reply_document(filename, caption=cc)
                 else:
-                    await m.reply_video(filename,
-                                        supports_streaming=True,
-                                        height=720,
-                                        width=1280,
-                                        caption=cc,
-                                        duration=dur,
-                                        thumb=thumbnail,
-                                        progress=progress_bar,
-                                        progress_args=(reply, start_time))
+                    await m.reply_video(
+                        filename,
+                        supports_streaming=True,
+                        height=720,
+                        width=1280,
+                        caption=cc,
+                        duration=dur,
+                        thumb=thumbnail,
+                        progress=progress_bar,
+                        progress_args=(reply, start_time),
+                    )
                 count += 1
                 os.remove(filename)
 
@@ -1845,6 +1943,7 @@ async def account_login(bot: Client, m: Message):
     except Exception as e:
         await m.reply_text(e)
     await m.reply_text("Done")
+
 
 """
 @bot.on_message(filters.command(["top"]))

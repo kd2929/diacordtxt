@@ -1,5 +1,4 @@
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
-
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 keyboard = InlineKeyboardMarkup(
     [
