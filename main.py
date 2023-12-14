@@ -767,10 +767,10 @@ async def account_login(bot: Client, m: Message):
     ).json()["data"]
     aa = ""
     for data in response:
-        print(data)
+        print(data["_id"])
         batch_name = data["name"]
         batch_id = data["_id"]
-        aa = aa + f"**{batch_name}**  :  ```{batch_id}```\n\n"
+        aa = aa + f"**{batch_name}**  :  `{batch_id}`\n\n"
     await m.reply_text(aa)
 
     editable1 = await m.reply_text("**Now send the Batch ID to Download**")
