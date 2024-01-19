@@ -559,12 +559,11 @@ async def infcpsgin(bot: Client, m: Message):
     else:
         editable = await m.reply_text("Login Failed Check Response")
     b_data = resp.json()["data"]["totalBatches"]
-    print(b_data)
     cool = ""
     for data in b_data:
         t_name = data["batchName"]
         t_id = data["batchId"]
-        cool += f" **{t_name}** - ```{t_id}``` \n\n"
+        cool += f" **{t_name}** - `{t_id}` \n\n"
     await editable.edit(f'{"**You have these batches :-**"}\n\n{cool}')
     await m.reply_text("**Now send the Batch ID to Download**")
     input2 = message = await bot.listen(editable.chat.id)
@@ -578,7 +577,7 @@ async def infcpsgin(bot: Client, m: Message):
         id1 = data["id"]
         nam2 = data["name"]
         data["contentType"]
-        cool += f" **{nam2}** - ```{id1}```\n\n"
+        cool += f" **{nam2}** - `{id1}`\n\n"
     await editable.edit(f"**You have these Folders :-**\n\n{cool}")
     await m.reply_text("**Now send the Batch ID to Download**")
     input2 = message = await bot.listen(editable.chat.id)
@@ -595,7 +594,7 @@ async def infcpsgin(bot: Client, m: Message):
         fid = data["resources"]["files"]
         data["contentType"]
         FFF = "**FOLDER-ID -FOLDER NAME -TOTAL VIDEOS/PDFS**"
-        folder_m += f" ```{id1}``` - **{nam2}  -{vid} -{fid}**\n\n"
+        folder_m += f" `{id1}` - **{nam2}  -{vid} -{fid}**\n\n"
     await editable.edit(f'{"**You have these Folders :-**"}\n\n{FFF}\n\n{folder_m}')
     await m.reply_text("**Now send the Folder ID to Download**")
     input3 = message = await bot.listen(editable.chat.id)
@@ -614,7 +613,7 @@ async def infcpsgin(bot: Client, m: Message):
             fid = datas["resources"]["files"]
             datas["contentType"]
             FFF = "**FOLDER-ID -FOLDER NAME -TOTAL VIDEOS/PDFS**"
-            cool += f" ```{id2}``` - **{nam2} -{vid2}**\n\n"
+            cool += f" `{id2}` - **{nam2} -{vid2}**\n\n"
         await editable.edit(f'{"**You have these Folders :-**"}\n\n{FFF}\n\n{cool}')
         await m.reply_text("**Now send the Folder ID to Download**")
         input4 = message = await bot.listen(editable.chat.id)
@@ -632,7 +631,7 @@ async def infcpsgin(bot: Client, m: Message):
             dis2 = data["description"]
             url2 = data["url"]
             data["contentType"]
-            to_write += f" ```{id2}``` - **{nam2}  -{dis2}**\n"
+            to_write += f" `{id2}` - **{nam2}  -{dis2}**\n"
             mm = "careerplus1"
             with open(f"{mm}.txt", "a") as f:
                 f.write(f"{to_write}")
@@ -650,7 +649,7 @@ async def infcpsgin(bot: Client, m: Message):
             # respc = s.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers=headers).json()
             # urli = respc["url"]
             FFF = "**Topic-ID -Topic NAME **"
-            aa = f" ```{id2}``` - **{nam2}  -{des2}**\n\n"
+            aa = f" `{id2}` - **{nam2}  -{des2}**\n\n"
             if len(f"{vj}{aa}") > 4096:
                 # print(aa)
                 cool = ""
@@ -1012,7 +1011,7 @@ async def khazanan(bot: Client, m: Message):
     for data in response2:
         subject_name = data["name"]
         subject_id = data["_id"]
-        aa += f"**{subject_name}** : ```{subject_id}```\n\n"
+        aa += f"**{subject_name}** : `{subject_id}`\n\n"
     await m.reply_text(aa)
 
     await m.reply_text("**Send me Subject Id**")
@@ -1031,7 +1030,7 @@ async def khazanan(bot: Client, m: Message):
         for data in response3:
             teacher_name = data["name"] + data["description"]
             teacher_id = data["_id"]
-            bb += f"**{teacher_name}** : ```{teacher_id}```\n\n"
+            bb += f"**{teacher_name}** : `{teacher_id}`\n\n"
     await m.reply_text(bb)
     await m.reply_text("**Send me Teacher Id**")
     input3 = await bot.listen(editable.chat.id)
@@ -1288,7 +1287,7 @@ async def khann(bot: Client, m: Message):
     for data in response:
         batch_name = data["name"]
         batch_id = data["_id"]
-        aa = aa + f"**{batch_name}**  :  ```{batch_id}```\n\n"
+        aa = aa + f"**{batch_name}**  :  `{batch_id}`\n\n"
     await m.reply_text(aa)
 
     editable1 = await m.reply_text("**Now send the Batch ID to Download**")
@@ -1303,7 +1302,7 @@ async def khann(bot: Client, m: Message):
     for data in response2:
         subject_name = data["subject"]
         subject_id = data["_id"]
-        bb = bb + f"**{subject_name}**  :  ```{subject_id}&```\n\n"
+        bb = bb + f"**{subject_name}**  :  `{subject_id}&`\n\n"
     await m.reply_text(bb)
 
     await m.reply_text("**Now Send The Subject Id To Download**")
@@ -1323,7 +1322,7 @@ async def khann(bot: Client, m: Message):
     raw_text6 = int(input6.text)
 
     editable5 = await m.reply_text(
-        "Now send the : ```videos```, ```notes``` , ```DppNotes```"
+        "Now send the : `videos`, `notes` , `DppNotes`"
     )
     input7 = message = await bot.listen(editable.chat.id)
     raw_text7 = input7.text
