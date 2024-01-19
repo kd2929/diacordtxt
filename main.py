@@ -1321,9 +1321,7 @@ async def khann(bot: Client, m: Message):
     input6 = message = await bot.listen(editable.chat.id)
     raw_text6 = int(input6.text)
 
-    editable5 = await m.reply_text(
-        "Now send the : `videos`, `notes` , `DppNotes`"
-    )
+    editable5 = await m.reply_text("Now send the : `videos`, `notes` , `DppNotes`")
     input7 = message = await bot.listen(editable.chat.id)
     raw_text7 = input7.text
     to_write = ""
