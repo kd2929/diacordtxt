@@ -154,7 +154,7 @@ Step 3: Send your Telegram ID From @missrose_bot
 
 # ============== Start Commands ==========#
 @bot.on_message(filters.command(["start"]))
-async def account_login(bot: Client, m: Message):
+async def account_lstarn(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_photo(
             photo="https://graph.org/file/f60051408d17fd505fa11.jpg",
@@ -479,8 +479,8 @@ async def download_pw(bot: Client, m: Message):
             try:
                 Show = f"**Downloading:-**\n\n**Name :-** `{name}\nQuality - {raw_text2}`\n\n**Url :-** `{url}`\n**Thumb :-** `{old_thumb}`"
                 prog = await m.reply_text(Show)
-                cc = f"**➭ 𝗧𝗶𝘁𝗹𝗲 »** {name1} {res}.mkv\n**➭ Batch »** {raw_text0}\n**➭ Index »** {str(count).zfill(3)}\n➭ 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗱 𝗕𝘆 » X™"
-                cc1 = f"**➭ 𝗧𝗶𝘁𝗹𝗲 »** {name1} {res}.pdf\n**➭ Batch »** {raw_text0}\n**➭ Index »** {str(count).zfill(3)}\n➭ 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗱 𝗕𝘆 » X™"
+                cc = f"**➭ Name »** {name1} {res}.mkv\n**➭ Batch »** {raw_text0}"
+                cc1 = f"**➭ Name »** {name1} {res}.pdf\n**➭ Batch »** {raw_text0}"
                 if cmd == "pdf" or ".pdf" in str(url) or ".pdf" in name:
                     print("PDF")
                     try:
@@ -520,7 +520,7 @@ async def download_pw(bot: Client, m: Message):
 
 # ================ Class Plus =================#
 @bot.on_message(filters.command(["cp"]))
-async def info_login(bot: Client, m: Message):
+async def infcpsgin(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_text(
             "✨ Hello Sir,\n\nContact Me Click Below",
@@ -721,7 +721,7 @@ async def info_login(bot: Client, m: Message):
 
 
 @bot.on_message(filters.command(["pw"]))
-async def account_login(bot: Client, m: Message):
+async def accounpwlwogin(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_text(
             "✨ Hello Sir,\n\nContact Me Click Below",
@@ -962,7 +962,7 @@ async def account_login(bot: Client, m: Message):
 
 
 @bot.on_message(filters.command(["khazana"]))
-async def account_login(bot: Client, m: Message):
+async def khazanan(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_text(
             "✨ Hello I Am TXT File Downloader And Extractor Bot.\n\n👉🏻 Press /pyro To Download Links Listed. Send TXT File FORMAT {FileName : FileLink}\n👉🏻 Press /cancel To Cancel All Running Task\n👉🏻 Press /restart To Restart The Bot.\n👉🏻 Press /pw To Extract All Downloadable Links Using AUTH CODE \n\n🫶🏻 Bot Made By LegendBoy"
@@ -1147,7 +1147,7 @@ async def account_login(bot: Client, m: Message):
 
 
 @bot.on_message(filters.command(["apni"]))
-async def account_login(bot: Client, m: Message):
+async def apnissn(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_text(
             "✨ Hello Sir,\n\n• This Bot is paid\n• Click Below To Buy",
@@ -1243,8 +1243,8 @@ async def account_login(bot: Client, m: Message):
 # ============= Khan Sir ==============#
 
 
-@bot.on_message(filters.command(["khan"]))
-async def account_login(bot: Client, m: Message):
+@bot.on_message(filters.command(["khangs"]))
+async def khann(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_text(
             "✨ Hello Sir,\n\n• This Bot is paid\n• Click Below To Buy",
@@ -1410,7 +1410,7 @@ async def account_login(bot: Client, m: Message):
 
 
 @bot.on_message(filters.command(["adownload"]))
-async def account_login(bot: Client, m: Message):
+async def account_ln(bot: Client, m: Message):
     user = m.from_user.id if m.from_user is not None else None
     if user is not None and user not in sudo_users:
         await m.reply("**Buy it from @LegendBoy_OP**", quote=True)
@@ -1494,7 +1494,7 @@ async def account_login(bot: Client, m: Message):
 
 
 @bot.on_message(filters.command(["pro_vision"]))
-async def account_login(bot: Client, m: Message):
+async def pro_visooin(bot: Client, m: Message):
     user = m.from_user.id if m.from_user is not None else None
     if user is not None and user not in sudo_users:
         await m.reply("bhag bhosadi ke", quote=True)
@@ -1579,7 +1579,7 @@ async def account_login(bot: Client, m: Message):
 
 
 @bot.on_message(filters.command(["adda_pdf"]))
-async def account_login(bot: Client, m: Message):
+async def addaspsdin(bot: Client, m: Message):
     user = m.from_user.id if m.from_user is not None else None
     if user is not None and user not in sudo_users:
         await m.reply("**bhag bhosadi ke**", quote=True)
@@ -1671,7 +1671,7 @@ async def account_login(bot: Client, m: Message):
 
 
 @bot.on_message(filters.command(["pro_olive"]))
-async def account_login(bot: Client, m: Message):
+async def proolsgin(bot: Client, m: Message):
     user = m.from_user.id if m.from_user is not None else None
     if user is not None and user not in sudo_users:
         await m.reply("bhag bhosadi ke", quote=True)
@@ -1756,7 +1756,7 @@ async def account_login(bot: Client, m: Message):
 
 
 @bot.on_message(filters.command(["pro_jw"]))
-async def account_login(bot: Client, m: Message):
+async def projwin(bot: Client, m: Message):
     user = m.from_user.id if m.from_user is not None else None
     if user is not None and user not in sudo_users:
         await m.reply("**TUM BHOSADI WALE NIKKAL LO**", quote=True)
