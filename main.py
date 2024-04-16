@@ -143,13 +143,42 @@ async def shell(client, message: Message):
 
 
 paid_text = """
-» Hello i am online class bot which help you to **Extract** and **Download** video of Physics Wallah / Apni Kaksha / Khan Gs ..... Any Type of Online Class Which You Want.
-• **How to Access this bot**
+🤩 Hello i am Electric 
+ᴛᴇxᴛ ꜰɪʟᴇ 📁 ᴇxᴛʀᴀᴄᴛᴏʀ ʙᴏᴛ  
 
-Step 1: Click Below on Developer.
-Step 2: Go to Telegram Username
-Step 3: Send your Telegram ID From @missrose_bot
-"""
+Click Below Commands ⚙️
+
+╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈╮
+┣⪼ /Khangs ✳️ KHAN SIR APP
+╰┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈╯
+╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈╮
+┣⪼ /PW ✳️ PHYSICS WALLAH 
+╰┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈╯
+╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈╮
+┣⪼ /cp ✳️ CLASSPLUS APPS 💶
+╰┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈╯
+/apni ✳️ Download Now
+/cancel all process
+
+📝 TXT TO VIDEO 
+
+📝 JSON To TXT
+
+✴️You have to take ₹paid 💶
+ access only then you can do it.
+
+Follow These Process 🚀
+
+Step 1: Click Below on DEVELOPER
+ or -🎭  @Yourpriye
+
+🔐 After Payment 
+Step 2: Send Me Ur USER ID 🪪
+Step 3: ₹paid plans soon available ya dm
+/pyro 
+/shell
+/restart
+/cancel"""
 
 
 # ============== Start Commands ==========#
@@ -157,7 +186,7 @@ Step 3: Send your Telegram ID From @missrose_bot
 async def account_lstarn(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_photo(
-            photo="https://graph.org/file/f60051408d17fd505fa11.jpg",
+            photo="https://graph.org/file/581a59b9d3816044fa559.jpg",
             caption=paid_text,
             reply_markup=keyboard,
         )
@@ -523,7 +552,7 @@ async def download_pw(bot: Client, m: Message):
 async def infcpsgin(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_text(
-            "✨ Hello Sir,\n\nContact Me Click Below",
+            "✨ Hello Sir,\n\nContact Me Click Below and take 💸 paid access",
             reply_markup=keyboard,
         )
     s = requests.Session()
@@ -667,7 +696,7 @@ async def infcpsgin(bot: Client, m: Message):
 async def info_login(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_text(
-            "✨ Hello Sir,\n\nContact Me Click Below",
+            "✨ Hello Sir,\n\nContact Me Click Below 💸 Payment  after access using me,
             reply_markup=keyboard,
         )
     editable = await m.reply_text(
@@ -964,7 +993,7 @@ async def accounpwlwogin(bot: Client, m: Message):
 async def khazanan(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_text(
-            "✨ Hello I Am TXT File Downloader And Extractor Bot.\n\n👉🏻 Press /pyro To Download Links Listed. Send TXT File FORMAT {FileName : FileLink}\n👉🏻 Press /cancel To Cancel All Running Task\n👉🏻 Press /restart To Restart The Bot.\n👉🏻 Press /pw To Extract All Downloadable Links Using AUTH CODE \n\n🫶🏻 Bot Made By LegendBoy"
+            "✨ Hello I Am TXT File Downloader And Extractor Bot.\n\n👉🏻 Press /pyro To Download Links Listed. Send TXT File FORMAT {FileName : FileLink}\n👉🏻 Press /cancel To Cancel All Running Task\n👉🏻 Press /restart To Restart The Bot.\n👉🏻 Press /pw To Extract All Downloadable Links Using AUTH CODE \n\n🎭 Developer :- Electric Hacker"
         )
 
     editable = await m.reply_text(
@@ -1149,7 +1178,7 @@ async def khazanan(bot: Client, m: Message):
 async def apnissn(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_text(
-            "✨ Hello Sir,\n\n• This Bot is paid\n• Click Below To Buy",
+            "✨ Hello Sir,\n\n• This Bot is paid\n• Click Below To Buy 💸",
             reply_markup=keyboard,
         )
     editable = await m.reply_text(
@@ -1246,7 +1275,7 @@ async def apnissn(bot: Client, m: Message):
 async def khann(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_text(
-            "✨ Hello Sir,\n\n• This Bot is paid\n• Click Below To Buy",
+            "✨ Hello Sir,\n\n• This Bot is paid\n• Click Below To Buy 💸 paid service after using this",
             reply_markup=keyboard,
         )
     editable = await m.reply_text(
@@ -1410,11 +1439,11 @@ async def khann(bot: Client, m: Message):
 async def account_ln(bot: Client, m: Message):
     user = m.from_user.id if m.from_user is not None else None
     if user is not None and user not in sudo_users:
-        await m.reply("**Buy it from @LegendBoy_OP**", quote=True)
+        await m.reply("**Buy it from @ElectricHacker**", quote=True)
         return
     else:
         editable = await m.reply_text(
-            "Hello Bruh **I An Anurag Downloader Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** : Pyrogram\n\nSend **TXT** File {Name : Link}"
+            "Hello Bruh **I An Electruc Hacker Downloader Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** : Pyrogram\n\nSend **TXT** File {Name : Link}"
         )
     input: Message = await bot.listen(editable.chat.id)
     x = await input.download()
