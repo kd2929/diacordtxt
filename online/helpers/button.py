@@ -4,12 +4,12 @@ keyboard = InlineKeyboardMarkup(
     [
         [
             InlineKeyboardButton(
-                text="Developer",
-                url="https://t.me/LegendBot_Owner",
+                text="Developer ✳️",
+                url="https://t.me/ElectricScammer",
             ),
             InlineKeyboardButton(
-                text="About Me",
-                url="https://t.me/LegendBot_AI/476",
+                text="Follow Me ✴️",
+                url="https://t.me/Electric_Hacker_Team",
             ),
         ],
     ]
