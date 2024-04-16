@@ -696,7 +696,7 @@ async def infcpsgin(bot: Client, m: Message):
 async def info_login(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_text(
-            "✨ Hello Sir,\n\nContact Me Click Below 💸 Payment  after access using me,
+            "✨ Hello Sir,\n\nContact Me Click Below 💸 Payment  after access using me",
             reply_markup=keyboard,
         )
     editable = await m.reply_text(
