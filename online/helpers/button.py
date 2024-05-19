@@ -5,11 +5,11 @@ keyboard = InlineKeyboardMarkup(
         [
             InlineKeyboardButton(
                 text="Developer ✳️",
-                url="https://t.me/ElectricScammer",
+                url="https://dragon_empire7",
             ),
             InlineKeyboardButton(
                 text="Follow Me ✴️",
-                url="https://t.me/Electric_Hacker_Team",
+                url="https://dragon_empire7",
             ),
         ],
     ]
