@@ -143,7 +143,7 @@ async def shell(client, message: Message):
 
 
 paid_text = """
-🤩 Hello i am Electric 
+🤩 Hello i am Dragon 
 ᴛᴇxᴛ ꜰɪʟᴇ 📁 ᴇxᴛʀᴀᴄᴛᴏʀ ʙᴏᴛ  
 
 Click Below Commands ⚙️
@@ -170,7 +170,7 @@ Click Below Commands ⚙️
 Follow These Process 🚀
 
 Step 1: Click Below on DEVELOPER
- or -🎭  @Yourpriye
+ or -🎭  @Frigo7
 
 🔐 After Payment 
 Step 2: Send Me Ur USER ID 🪪
@@ -993,7 +993,7 @@ async def accounpwlwogin(bot: Client, m: Message):
 async def khazanan(bot: Client, m: Message):
     if not one(m.from_user.id):
         return await m.reply_text(
-            "✨ Hello I Am TXT File Downloader And Extractor Bot.\n\n👉🏻 Press /pyro To Download Links Listed. Send TXT File FORMAT {FileName : FileLink}\n👉🏻 Press /cancel To Cancel All Running Task\n👉🏻 Press /restart To Restart The Bot.\n👉🏻 Press /pw To Extract All Downloadable Links Using AUTH CODE \n\n🎭 Developer :- Electric Hacker"
+            "✨ Hello I Am TXT File Downloader And Extractor Bot.\n\n👉🏻 Press /pyro To Download Links Listed. Send TXT File FORMAT {FileName : FileLink}\n👉🏻 Press /cancel To Cancel All Running Task\n👉🏻 Press /restart To Restart The Bot.\n👉🏻 Press /pw To Extract All Downloadable Links Using AUTH CODE \n\n🎭 Developer :- Dragon Empire"
         )
 
     editable = await m.reply_text(
@@ -1439,11 +1439,11 @@ async def khann(bot: Client, m: Message):
 async def account_ln(bot: Client, m: Message):
     user = m.from_user.id if m.from_user is not None else None
     if user is not None and user not in sudo_users:
-        await m.reply("**Buy it from @ElectricHacker**", quote=True)
+        await m.reply("**Buy it from @Frigo7**", quote=True)
         return
     else:
         editable = await m.reply_text(
-            "Hello Bruh **I An Electruc Hacker Downloader Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** : Pyrogram\n\nSend **TXT** File {Name : Link}"
+            "Hello Bruh **I An Deagon Empire  Bot**. I can download videos from **text** file one by one.**\n\nLanguage** : Python**\nFramework** : Pyrogram\n\nSend **TXT** File {Name : Link}"
         )
     input: Message = await bot.listen(editable.chat.id)
     x = await input.download()
